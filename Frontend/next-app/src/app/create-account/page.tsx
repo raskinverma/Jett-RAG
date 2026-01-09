@@ -4,6 +4,8 @@ import { useState } from "react";
 import Link from "next/link";
 import { toast } from "sonner";
 import { useAuth } from "@/contexts/AuthContext";
+import RippleGrid from "@/components/RippleGrid";
+import { motion } from "framer-motion";
 
 export default function CreateAccount() {
   const { signup, isLoading } = useAuth();
@@ -11,6 +13,22 @@ export default function CreateAccount() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Background component for consistency
+  const Background = () => (
+    <div style={{ position: "absolute", inset: 0, zIndex: 0 }}>
+      <RippleGrid
+        enableRainbow={false}
+        gridColor="#3b82f6"
+        rippleIntensity={0.1}
+        gridSize={10}
+        gridThickness={15}
+        mouseInteraction={true}
+        mouseInteractionRadius={1.2}
+        opacity={0.7}
+      />
+    </div>
+  );
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -43,19 +61,29 @@ export default function CreateAccount() {
   if (isLoading) {
     return (
       <div className="auth-body">
-        <div className="auth-box">
-          <h1>GraphRAG</h1>
-          <p>Loading...</p>
-        </div>
+        <Background />
       </div>
     );
   }
 
   return (
     <div className="auth-body">
+      <Background />
       <div className="auth-box">
-        <h1>GraphRAG</h1>
-        <form className="auth-form" onSubmit={handleSubmit}>
+        <motion.h1
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, ease: "easeOut" }}
+        >
+          Jett-RAG
+        </motion.h1>
+        <motion.form
+          className="auth-form"
+          onSubmit={handleSubmit}
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, ease: "easeOut" }}
+        >
           <h2>Create an account</h2>
           <input
             type="text"
@@ -90,15 +118,24 @@ export default function CreateAccount() {
             {isSubmitting ? "Creating account..." : "Continue"}
           </button>
 
+          <div className="divider">
+            <span className="or-text">or</span>
+            <div className="line"></div>
+          </div>
+
+          <Link href="/sign-in" className="link-btn">
+            Sign In
+          </Link>
+
           <p className="policy-text">
             By clicking continue, you agree to our Terms of Service and Privacy
             Policy
           </p>
 
-          <Link href="/sign-in" className="back-link">
+          <Link href="/" className="back-link">
             ← Go Back
           </Link>
-        </form>
+        </motion.form>
       </div>
     </div>
   );
